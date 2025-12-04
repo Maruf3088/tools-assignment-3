@@ -3,12 +3,12 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { AuthContext } from "../provider/AuthProvider";
 import { toast } from "react-toastify";
-import { FaGoogle } from "react-icons/fa";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
-  const { logInUser, loginWithGoogle, passwordReset } = useContext(AuthContext);
+  const { logInUser, loginWithGoogle, passwordReset,logInWithGithub } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -40,6 +40,19 @@ const Login = () => {
         toast.error(error.message);
       });
   };
+
+  const handleLoginWithGithub=()=>{
+
+    logInWithGithub()
+      .then(() => {
+        toast.success("User logged in successfully!");
+        navigate(location?.state?.from || "/");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  }
+
 
   const handleForgotPassword = () => {
     if (!email) {
@@ -143,6 +156,14 @@ const Login = () => {
           >
             <FaGoogle className="text-blue-500" />
             Login with Google
+          </button>
+          {/* Google Login Button */}
+          <button
+            onClick={handleLoginWithGithub}
+            className="w-full mt-3 flex items-center justify-center gap-2 bg-black text-white border py-3 font-bold rounded-lg hover:opacity-90 transition duration-200"
+          >
+            <FaGithub className="text-white" />
+            Login with Github
           </button>
 
           <p className="text-center mt-4 text-gray-600">

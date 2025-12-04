@@ -9,6 +9,7 @@ import {
   signOut,
   updateProfile,
   sendPasswordResetEmail,
+  GithubAuthProvider,
 } from "firebase/auth";
 import { toast } from "react-toastify";
 
@@ -19,6 +20,7 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const googleProvider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
 
   const createUser = (email, password) => {
     setLoading(true);
@@ -35,18 +37,22 @@ const AuthProvider = ({ children }) => {
     return signInWithPopup(auth, googleProvider);
   };
 
-  const updateUserProfile =  (userName, image) => {
-   
+  const logInWithGithub = () => {
+    setLoading(true);
+    return signInWithPopup(auth, githubProvider);
+  };
+
+  const updateUserProfile = (userName, image) => {
     return updateProfile(auth.currentUser, {
       displayName: userName,
       photoURL: image,
-    })
+    });
   };
 
-  const passwordReset=(email)=>{
+  const passwordReset = (email) => {
     setLoading(true);
     return sendPasswordResetEmail(auth, email);
-  }
+  };
 
   const logOut = () => {
     setLoading(true);
@@ -55,9 +61,8 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    
       setUser(currentUser);
-      setLoading(false); 
+      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -66,13 +71,14 @@ const AuthProvider = ({ children }) => {
   const authInfo = {
     setUser,
     user,
-    createUser, 
+    createUser,
     logInUser,
     loginWithGoogle,
+    logInWithGithub,
     logOut,
     loading,
     updateUserProfile,
-    passwordReset
+    passwordReset,
   };
 
   return (
